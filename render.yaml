@@ -1,0 +1,30 @@
+services:
+  # Backend API (FastAPI)
+  - type: web
+    name: codearena-api
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.7"
+      - key: FRONTEND_ORIGIN
+        sync: false        # paste your website address here, for example https://codearena-web.onrender.com
+      - key: JUDGE0_API_URL
+        value: https://ce.judge0.com
+      - key: JUDGE0_API_KEY
+        sync: false        # leave empty for the free public server
+      - key: JUDGE0_AUTH_HEADER
+        value: X-Auth-Token
+
+  # Website (React, built with Vite)
+  - type: web
+    name: codearena-web
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false        # your API address followed by /api, for example https://codearena-api.onrender.com/api
